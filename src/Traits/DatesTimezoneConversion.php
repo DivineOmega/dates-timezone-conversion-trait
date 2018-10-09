@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits;
+namespace DivineOmega\DatesTimezoneConversion\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
