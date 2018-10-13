@@ -29,6 +29,9 @@ trait DatesTimezoneConversion
             if ($user) {
                 $value->setTimezone($user->getAttributeValue('timezone'));
             }
+            else{
+                $value->setTimeZone(config('app.timezone'));
+            }
 
         }
 
