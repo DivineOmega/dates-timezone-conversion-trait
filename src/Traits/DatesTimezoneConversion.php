@@ -3,6 +3,7 @@
 namespace DivineOmega\DatesTimezoneConversion\Traits;
 
 use Carbon\Carbon;
+use DemeterChain\C;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +45,16 @@ trait DatesTimezoneConversion
      */
     public function setAttribute($key, $value)
     {
-        if ($this->isDateObject($key, $value)) {
+        if (in_array($key, $this->getDates())) {
+            $value = $this->convertToDateObject($value);
+
+            /** @var Model $user */
+            $user = Auth::user();
+
+            if ($user) {
+                $value = Carbon::parse($value, $user->getAttributeValue('timezone'));
+            }
+
             $value->setTimezone(config('app.timezone'));
         }
 
@@ -63,7 +73,30 @@ trait DatesTimezoneConversion
     {
         return in_array($key, $this->getDates()) &&
             is_object($value) &&
-            get_class($value) === Carbon::class;
+            $value instanceof Carbon;
+    }
+
+    /**
+     * Converts a value to a Carbon date object if needed.
+     *
+     * @param $value
+     * @return Carbon
+     */
+    private function convertToDateObject($value)
+    {
+        if (is_object($value) && $value instanceof Carbon) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            return Carbon::parse($value);
+        }
+
+        if (is_integer($value)) {
+            return Carbon::createFromTimestamp($value);
+        }
+
+        throw new \Exception('Unable to convert value to Carbon date object.');
     }
 
 }
