@@ -3,7 +3,6 @@
 namespace DivineOmega\DatesTimezoneConversion\Traits;
 
 use Carbon\Carbon;
-use DemeterChain\C;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
